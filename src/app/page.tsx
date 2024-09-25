@@ -13,11 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { login } from "@/services/auth";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
+  const router = useRouter();
 
   const handleLogin = React.useCallback(
     async (e: React.FormEvent) => {
@@ -27,7 +29,11 @@ export default function Home() {
       try {
         const data = await login(email, password);
         console.log("Login bem-sucedido:", data);
-        // Redirecione ou salve o token aqui
+
+        localStorage.setItem("authToken", data.data.token);
+
+        router.push("/dashboard");
+        setError(data.message);
       } catch (err: any) {
         setError(err.message);
       }
@@ -76,7 +82,7 @@ export default function Home() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Link href="/register">
-            <Button variant="outline">Não tem uma conta? Clique aqui</Button>
+            <Button variant="outline">Cadastre-se</Button>
           </Link>
           <Button type="submit" onClick={handleLogin}>
             Logar
