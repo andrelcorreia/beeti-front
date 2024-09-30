@@ -1,29 +1,28 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/SideBar";
-import { Clients } from "@/services/clientsRequest";
 import { useRouter } from "next/navigation";
+import { UsersRequest } from "@/services/usersRequest";
 
-export default function Dashboard() {
-  const [clients, setClients] = useState<any[]>([]);
+export default function Users() {
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const clientsService = new Clients();
+  const userService = new UsersRequest();
   const router = useRouter();
 
-  // Simulação do token (substitua pelo seu método de pegar o token)
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
-    const fetchClients = async () => {
+    const fetchUsers = async () => {
       try {
         if (!token) {
           throw new Error("Token não encontrado.");
         }
 
-        const data = await clientsService.listAllClients(token);
-        setClients(data);
+        const data = await userService.listAll(token);
+        setUsers(data);
       } catch (err: any) {
         setError(err.message);
         if (err.message === "Token não encontrado.") {
@@ -34,11 +33,11 @@ export default function Dashboard() {
       }
     };
 
-    fetchClients();
+    fetchUsers();
   }, [token]);
 
-  const handleClientClick = (clientId: string) => {
-    router.push(`/clientDetails/${clientId}`);
+  const handleUserClick = (userId: string) => {
+    router.push(`/userDetails/${userId}`);
   };
 
   return (
@@ -50,35 +49,32 @@ export default function Dashboard() {
 
       {/* Main content */}
       <div className="flex-1 p-10">
-        <h1 className="text-xl font-bold mb-5">Clients</h1>
+        <h1 className="text-xl font-bold mb-5">Usuários</h1>
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
           <p className="text-red-500">Error: {error}</p>
         ) : (
           <div>
-            {clients.length > 0 ? (
+            {users.length > 0 ? (
               <ul className="space-y-4">
-                {clients.map((client) => (
+                {users.map((user) => (
                   <li
-                    key={client.id}
+                    key={user.id}
                     className="border p-4 rounded-md cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleClientClick(client.id)} // Faz o bloco ser clicável
+                    onClick={() => handleUserClick(user.id)}
                   >
                     <p>
-                      <strong>Name:</strong> {client.name}
+                      <strong>Name:</strong> {user.name}
                     </p>
                     <p>
-                      <strong>Full Address:</strong> {client.full_address}
-                    </p>
-                    <p>
-                      <strong>Telephone:</strong> {client.telephone}
+                      <strong>Email:</strong> {user.email}
                     </p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p>No clients found.</p>
+              <p>No users found.</p>
             )}
           </div>
         )}

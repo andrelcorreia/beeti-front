@@ -14,12 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { login } from "@/services/auth";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Home() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const router = useRouter();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const handleLogin = React.useCallback(
     async (e: React.FormEvent) => {
@@ -30,7 +36,9 @@ export default function Home() {
         const data = await login(email, password);
         console.log("Login bem-sucedido:", data);
 
-        localStorage.setItem("authToken", data.data.token);
+        if (data.data.token) {
+          localStorage.setItem("token", data.data.token); // Salvar token no localStorage
+        }
 
         router.push("/dashboard");
         setError(data.message);
@@ -65,16 +73,26 @@ export default function Home() {
                   placeholder="test@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  maxLength={140}
                 />
               </div>
-              <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col space-y-1.5 relative">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Digite sua senha"
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </div>
+                </div>
               </div>
             </div>
             {error && <p className="text-red-500">{error}</p>}
@@ -89,7 +107,7 @@ export default function Home() {
           </Button>
         </CardFooter>
         <div className="flex justify-center mt-2">
-          <Link href="/forgot-password">
+          <Link href="/forgotPassword">
             <p className="text-sm text-gray-500">Esqueci minha senha</p>
           </Link>
         </div>

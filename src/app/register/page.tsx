@@ -13,19 +13,33 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import api from "@/services/axios";
+import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [confirmPassword, setConfirmPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
+  const router = useRouter();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const handleRegister = React.useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       setError(null);
       setSuccess(null);
+
+      if (confirmPassword != password) {
+        setError("Senhas não combinam");
+        return;
+      }
 
       try {
         const response = await api.post("/users", {
@@ -34,7 +48,10 @@ export default function Register() {
           password,
         });
         setSuccess(response.data.message);
+
         console.log("Usuário criado com sucesso:", response.data);
+
+        router.push("/dashboard");
       } catch (err: any) {
         setError(err.response?.data?.message || "Erro ao criar usuário");
       }
@@ -51,7 +68,7 @@ export default function Register() {
         backgroundPosition: "center",
       }}
     >
-      <Card className="w-[350px]  bg-white bg-opacity-80">
+      <Card className="w-[350px] bg-white bg-opacity-80">
         <CardHeader>
           <CardTitle>Cadastro</CardTitle>
           <CardDescription>
@@ -68,6 +85,8 @@ export default function Register() {
                   placeholder="Seu nome"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  minLength={8}
+                  maxLength={140}
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -77,15 +96,39 @@ export default function Register() {
                   placeholder="test@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  minLength={8}
+                  maxLength={140}
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Digite sua senha"
+                    minLength={8}
+                    maxLength={12}
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="confirmPassword">Confirmar senha</Label>
                 <Input
-                  id="password"
+                  id="confirmPassword"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  minLength={8}
+                  maxLength={12}
                 />
               </div>
             </div>

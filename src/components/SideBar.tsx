@@ -31,7 +31,9 @@ const Sidebar = () => {
           </CommandItem>
           <CommandItem>
             <User className="mr-2 h-4 w-4" />
-            <span>Usuários</span>
+            <Link href="/users">
+              <span>Usuários</span>
+            </Link>
           </CommandItem>
           <CommandItem>
             <LogOut className="mr-2 h-4 w-4" />
