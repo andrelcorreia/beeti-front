@@ -12,14 +12,23 @@ export class UsersRequest {
         }
       );
       console.log({ response });
+      console.log("test");
       if (!response.ok) {
         throw new Error(`Erro na requisição: ${response.status}`);
       }
-
+      console.log("test2");
       const result = await response.json();
-
-      if (result.result === "success" && Array.isArray(result.data)) {
-        return result.data;
+      console.log({ result });
+      // Acessando result.data.list para obter a lista de usuários e result.data.total para o total
+      if (
+        result.result === "success" &&
+        result.data &&
+        Array.isArray(result.data.list)
+      ) {
+        return {
+          users: result.data.list, // Lista de usuários
+          total: result.data.total, // Total de usuários
+        };
       } else {
         throw new Error(
           result.message || "Erro desconhecido na resposta da API"

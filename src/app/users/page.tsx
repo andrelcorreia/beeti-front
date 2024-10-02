@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Sidebar from "@/components/SideBar";
+import Pagination from "@/components/Pagination"; // Adicionando componente de paginação
 import { useRouter } from "next/navigation";
 import { UsersRequest } from "@/services/usersRequest";
 
@@ -8,9 +9,12 @@ export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const userService = new UsersRequest();
-  const router = useRouter();
+  const [page, setPage] = useState(1); // Página atual
+  const [limit, setLimit] = useState(15); // Limite de usuários por página
+  const [totalUsers, setTotalUsers] = useState(0); // Total de usuários
+  const usersRequest = useMemo(() => new UsersRequest(), []);
 
+  const router = useRouter();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -21,8 +25,10 @@ export default function Users() {
           throw new Error("Token não encontrado.");
         }
 
-        const data = await userService.listAll(token);
-        setUsers(data);
+        const data = await usersRequest.listAll(token, page, limit);
+        console.log({ data });
+        setUsers(data.users);
+        setTotalUsers(data.total); // Assumindo que sua API retorna o total de usuários
       } catch (err: any) {
         setError(err.message);
         if (err.message === "Token não encontrado.") {
@@ -34,10 +40,21 @@ export default function Users() {
     };
 
     fetchUsers();
-  }, [token]);
+  }, [page, limit, router, token, usersRequest]);
 
   const handleUserClick = (userId: string) => {
     router.push(`/userDetails/${userId}`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= Math.ceil(totalUsers / limit)) {
+      setPage(newPage);
+    }
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1); // Resetando para a primeira página ao mudar o limite
   };
 
   return (
@@ -56,7 +73,7 @@ export default function Users() {
           <p className="text-red-500">Error: {error}</p>
         ) : (
           <div>
-            {users.length > 0 ? (
+            {Array.isArray(users) && users.length > 0 ? (
               <ul className="space-y-4">
                 {users.map((user) => (
                   <li
@@ -78,6 +95,32 @@ export default function Users() {
             )}
           </div>
         )}
+
+        {/* Paginação */}
+        <Pagination
+          totalItems={totalUsers}
+          currentPage={page}
+          itemsPerPage={limit}
+          onPageChange={handlePageChange}
+          isLastPage={false}
+        />
+
+        {/* Limite por página */}
+        <div className="mt-4">
+          <label htmlFor="limit" className="mr-2">
+            Itens por página:
+          </label>
+          <select
+            id="limit"
+            value={limit}
+            onChange={(e) => handleLimitChange(Number(e.target.value))}
+            className="border p-2 rounded"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+          </select>
+        </div>
       </div>
     </div>
   );

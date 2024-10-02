@@ -46,7 +46,7 @@ export default function Home() {
         setError(err.message);
       }
     },
-    [email, password]
+    [email, password, router]
   );
 
   return (

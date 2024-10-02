@@ -32,15 +32,46 @@ export class Clients {
     }
   }
 
-  async createClient(token: string, clientData: any) {
+  async createClient(
+    token: string,
+    clientData: {
+      name: string;
+      document: string;
+      full_address: string;
+      telephone: string;
+    }
+  ) {
     try {
-      const response = await fetch("http://localhost:3333/clients", {
+      const response = await fetch("http://localhost:3333/v1/clients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(clientData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao criar cliente");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Erro ao criar cliente:", error);
+      throw error;
+    }
+  }
+
+  async inactiveClient(token: string, id: string) {
+    try {
+      const response = await fetch(`http://localhost:3333/v1/clients/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {

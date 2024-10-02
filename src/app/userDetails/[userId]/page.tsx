@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import { Clients } from "@/services/clientsRequest";
@@ -15,7 +15,7 @@ export default function UserDetails({ params }: any) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const usersRequest = new UsersRequest();
+  const usersRequest = useMemo(() => new UsersRequest(), []);
 
   const token = localStorage.getItem("token") || "";
 
@@ -25,7 +25,7 @@ export default function UserDetails({ params }: any) {
         if (!token) throw new Error("Token não encontrado.");
 
         const data = await usersRequest.listAll(token);
-        const selectedClient = data.find((c: any) => c.id === userId);
+        const selectedClient = data.users.find((c: any) => c.id === userId);
 
         if (!selectedClient) throw new Error("Cliente não encontrado.");
 
@@ -40,7 +40,7 @@ export default function UserDetails({ params }: any) {
     };
 
     fetchClient();
-  }, [userId, token]);
+  }, [userId, token, usersRequest]);
 
   const handleEdit = () => {
     setIsEditing(true);

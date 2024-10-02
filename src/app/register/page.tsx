@@ -36,7 +36,9 @@ export default function Register() {
       setError(null);
       setSuccess(null);
 
-      if (confirmPassword != password) {
+      console.log({ confirmPassword, password });
+
+      if (confirmPassword !== password) {
         setError("Senhas não combinam");
         return;
       }
@@ -51,12 +53,12 @@ export default function Register() {
 
         console.log("Usuário criado com sucesso:", response.data);
 
-        router.push("/dashboard");
+        router.push("/");
       } catch (err: any) {
         setError(err.response?.data?.message || "Erro ao criar usuário");
       }
     },
-    [name, email, password]
+    [confirmPassword, password, name, email, router]
   );
 
   return (
@@ -140,9 +142,7 @@ export default function Register() {
           <Link href="/">
             <Button variant="outline">Voltar ao Login</Button>
           </Link>
-          <Button type="submit" onClick={handleRegister}>
-            Enviar
-          </Button>
+          <Button type="submit">Enviar</Button>
         </CardFooter>
       </Card>
     </div>

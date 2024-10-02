@@ -1,13 +1,16 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import { Clients } from "@/services/clientsRequest";
-console.log("eeeeeeTa");
+
 export default function ClientDetails({ params }: any) {
   const router = useRouter();
   const { clientId } = params;
+  const clientsService = useMemo(() => new Clients(), []);
+
   console.log({ clientId });
+
   const [client, setClient] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
@@ -15,7 +18,6 @@ export default function ClientDetails({ params }: any) {
   const [telephone, setTelephone] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const clientsService = new Clients();
 
   const token = localStorage.getItem("token") || "";
 
@@ -41,7 +43,7 @@ export default function ClientDetails({ params }: any) {
     };
 
     fetchClient();
-  }, [clientId, token]);
+  }, [clientId, token, clientsService]);
 
   const handleEdit = () => {
     setIsEditing(true);
