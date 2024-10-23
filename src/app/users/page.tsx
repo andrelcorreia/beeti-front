@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 import Sidebar from "@/components/SideBar";
-import Pagination from "@/components/Pagination"; // Adicionando componente de paginação
+import Pagination from "@/components/Pagination";
 import { useRouter } from "next/navigation";
 import { UsersRequest } from "@/services/usersRequest";
 
@@ -9,9 +9,9 @@ export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1); // Página atual
-  const [limit, setLimit] = useState(15); // Limite de usuários por página
-  const [totalUsers, setTotalUsers] = useState(0); // Total de usuários
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(15);
+  const [totalUsers, setTotalUsers] = useState(0);
   const usersRequest = useMemo(() => new UsersRequest(), []);
 
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function Users() {
         const data = await usersRequest.listAll(token, page, limit);
         console.log({ data });
         setUsers(data.users);
-        setTotalUsers(data.total); // Assumindo que sua API retorna o total de usuários
+        setTotalUsers(data.total);
       } catch (err: any) {
         setError(err.message);
         if (err.message === "Token não encontrado.") {
@@ -54,7 +54,7 @@ export default function Users() {
 
   const handleLimitChange = (newLimit: number) => {
     setLimit(newLimit);
-    setPage(1); // Resetando para a primeira página ao mudar o limite
+    setPage(1);
   };
 
   return (

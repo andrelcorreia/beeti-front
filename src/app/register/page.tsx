@@ -25,7 +25,7 @@ export default function Register() {
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
   const router = useRouter();
-
+  console.log({ confirmPassword, password });
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -44,6 +44,7 @@ export default function Register() {
       }
 
       try {
+        console.log({ name, email, password });
         const response = await api.post("/users", {
           name,
           email,
@@ -142,7 +143,9 @@ export default function Register() {
           <Link href="/">
             <Button variant="outline">Voltar ao Login</Button>
           </Link>
-          <Button type="submit">Enviar</Button>
+          <Button type="submit" onClick={handleRegister}>
+            Enviar
+          </Button>
         </CardFooter>
       </Card>
     </div>

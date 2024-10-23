@@ -1,8 +1,11 @@
-export class Clients {
-  async listAllClients(token: string, page: number = 0, limit: number = 15) {
+// services/productRequest.ts
+
+export class ProductsRequest {
+  async listAllProducts(token: string, page: number = 0, limit: number = 15) {
     try {
+      console.log({ page, limit });
       const response = await fetch(
-        `http://localhost:3333/v1/clients?limit=${limit}&page=${page}`,
+        `http://localhost:3333/v1/products?limit=${limit}&page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -15,7 +18,7 @@ export class Clients {
       }
 
       const result = await response.json();
-
+      console.log({ result });
       if (result.result === "success" && Array.isArray(result.data)) {
         return result.data;
       } else {
@@ -24,46 +27,44 @@ export class Clients {
         );
       }
     } catch (error) {
-      console.error("Erro ao buscar clientes:", error);
+      console.error("Erro ao buscar produtos:", error);
       throw error;
     }
   }
 
-  async createClient(
+  async createProduct(
     token: string,
-    clientData: {
+    productData: {
       name: string;
-      document: string;
-      full_address: string;
-      telephone: string;
+      description: string;
     }
   ) {
     try {
-      const response = await fetch("http://localhost:3333/v1/clients", {
+      const response = await fetch("http://localhost:3333/v1/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(clientData),
+        body: JSON.stringify(productData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao criar cliente");
+        throw new Error(errorData.message || "Erro ao criar produto");
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Erro ao criar cliente:", error);
+      console.error("Erro ao criar produto:", error);
       throw error;
     }
   }
 
-  async inactiveClient(token: string, id: string) {
+  async inactiveProduct(token: string, id: string) {
     try {
-      const response = await fetch(`http://localhost:3333/v1/clients/${id}`, {
+      const response = await fetch(`http://localhost:3333/v1/products/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,45 +74,45 @@ export class Clients {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao criar cliente");
+        throw new Error(errorData.message || "Erro ao criar produto");
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Erro ao criar cliente:", error);
+      console.error("Erro ao criar produto:", error);
       throw error;
     }
   }
 
-  async editClient(
+  async editProduct(
     token: string,
-    clientId: string,
-    clientData: { name: string; full_address: string; telephone: string }
+    productId: string,
+    productData: { name: string; description: string }
   ) {
-    console.log({ token, clientId, clientData });
+    console.log({ token, productId, productData });
     try {
       const response = await fetch(
-        `http://localhost:3333/v1/clients/${clientId}`,
+        `http://localhost:3333/v1/products/${productId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(clientData),
+          body: JSON.stringify(productData),
         }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao atualizar cliente");
+        throw new Error(errorData.message || "Erro ao atualizar produto");
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Erro ao atualizar cliente:", error);
+      console.error("Erro ao atualizar produto:", error);
       throw error;
     }
   }

@@ -1,4 +1,3 @@
-// src/services/auth.ts
 import api from "@/services/axios";
 
 export async function login(email: string, password: string) {

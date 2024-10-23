@@ -37,7 +37,7 @@ export default function Home() {
         console.log("Login bem-sucedido:", data);
 
         if (data.data.token) {
-          localStorage.setItem("token", data.data.token); // Salvar token no localStorage
+          localStorage.setItem("token", data.data.token);
         }
 
         router.push("/dashboard");

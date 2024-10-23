@@ -1,5 +1,3 @@
-// services/usersRequest.ts
-
 export class UsersRequest {
   async listAll(token: string, page: number = 0, limit: number = 15) {
     try {
@@ -19,15 +17,15 @@ export class UsersRequest {
       console.log("test2");
       const result = await response.json();
       console.log({ result });
-      // Acessando result.data.list para obter a lista de usuários e result.data.total para o total
+
       if (
         result.result === "success" &&
         result.data &&
         Array.isArray(result.data.list)
       ) {
         return {
-          users: result.data.list, // Lista de usuários
-          total: result.data.total, // Total de usuários
+          users: result.data.list,
+          total: result.data.total,
         };
       } else {
         throw new Error(

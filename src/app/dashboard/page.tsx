@@ -37,7 +37,7 @@ export default function Dashboard() {
   };
 
   const handleCreateClient = () => {
-    router.push("/createClient"); // Redireciona para a página de criação de cliente
+    router.push("/createClient");
   };
 
   return (
@@ -46,13 +46,7 @@ export default function Dashboard() {
         <Sidebar />
       </div>
       <div className="flex-1 p-10">
-        <h1 className="text-xl font-bold mb-5">Clients</h1>
-        <button
-          onClick={handleCreateClient}
-          className="mb-4 bg-blue-500 text-white p-2 rounded"
-        >
-          Criar Cliente
-        </button>
+        <h1 className="text-xl font-bold mb-5">Clientes</h1>
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
@@ -78,6 +72,12 @@ export default function Dashboard() {
             ))}
           </ul>
         )}
+        <button
+          onClick={handleCreateClient}
+          className="mb-4 bg-blue-500 text-white p-2 rounded"
+        >
+          Criar Cliente
+        </button>
       </div>
     </div>
   );

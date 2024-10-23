@@ -2,36 +2,36 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
-import { Clients } from "@/services/clientsRequest";
-import { UsersRequest } from "@/services/usersRequest";
+import { ProductsRequest } from "@/services/productRequest";
 
-export default function UserDetails({ params }: any) {
+export default function ProductDetails({ params }: any) {
   const router = useRouter();
-  const { userId } = params;
+  const { productId } = params;
+  const productRequest = useMemo(() => new ProductsRequest(), []);
 
-  const [user, setUser] = useState<any>(null);
+  const [client, setClient] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const usersRequest = useMemo(() => new UsersRequest(), []);
 
-  const token = localStorage.getItem("token") || "";
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
     const fetchClient = async () => {
       try {
         if (!token) throw new Error("Token não encontrado.");
 
-        const data = await usersRequest.listAll(token);
-        const selectedClient = data.users.find((c: any) => c.id === userId);
+        const data = await productRequest.listAllProducts(token);
+        const selectedProduct = data.find((c: any) => c.id === productId);
 
-        if (!selectedClient) throw new Error("Cliente não encontrado.");
+        if (!selectedProduct) throw new Error("Cliente não encontrado.");
 
-        setUser(selectedClient);
-        setName(selectedClient.name);
-        setEmail(selectedClient.email);
+        setClient(selectedProduct);
+        setName(selectedProduct.name);
+        setDescription(selectedProduct.description);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -40,27 +40,29 @@ export default function UserDetails({ params }: any) {
     };
 
     fetchClient();
-  }, [userId, token, usersRequest]);
+  }, [productId, token, productRequest]);
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleSave = async () => {
-    console.log("info received", { userId });
+    console.log("info received", { productId });
     try {
-      await usersRequest.editUser(token, userId, {
+      await productRequest.editProduct(token!, productId, {
         name,
-        email,
+        description,
       });
       setIsEditing(false);
+
+      router.push("/products");
     } catch (err: any) {
       setError(err.message);
     }
   };
 
   const handleBack = () => {
-    router.push("/users");
+    router.push("/products");
   };
 
   return (
@@ -78,7 +80,7 @@ export default function UserDetails({ params }: any) {
           <p className="text-red-500">Error: {error}</p>
         ) : (
           <div>
-            <h1 className="text-xl font-bold mb-5">{user.name}</h1>
+            <h1 className="text-xl font-bold mb-5">{client.name}</h1>
             <div className="space-y-4">
               <div>
                 <label className="block font-medium">Name:</label>
@@ -88,7 +90,6 @@ export default function UserDetails({ params }: any) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="border p-2 rounded w-full"
-                    maxLength={140}
                   />
                 ) : (
                   <p>{name}</p>
@@ -96,17 +97,16 @@ export default function UserDetails({ params }: any) {
               </div>
 
               <div>
-                <label className="block font-medium">Email:</label>
+                <label className="block font-medium">Descrição:</label>
                 {isEditing ? (
                   <input
                     type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     className="border p-2 rounded w-full"
-                    maxLength={80}
                   />
                 ) : (
-                  <p>{email}</p>
+                  <p>{description}</p>
                 )}
               </div>
 

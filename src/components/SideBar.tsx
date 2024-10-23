@@ -27,7 +27,9 @@ const Sidebar = () => {
           </CommandItem>
           <CommandItem>
             <PackageSearch className="mr-2 h-4 w-4" />
-            <span>Produto</span>
+            <Link href="/products">
+              <span>Produto</span>
+            </Link>
           </CommandItem>
           <CommandItem>
             <User className="mr-2 h-4 w-4" />
