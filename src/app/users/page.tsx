@@ -26,7 +26,7 @@ export default function Users() {
         }
 
         const data = await usersRequest.listAll(token, page, limit);
-        console.log({ data });
+
         setUsers(data.users);
         setTotalUsers(data.total);
       } catch (err: any) {
