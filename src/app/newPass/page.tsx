@@ -9,15 +9,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import api from "@/services/axios";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
+  const router = useRouter();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const handleRegister = React.useCallback(
     async (e: React.FormEvent) => {
@@ -25,17 +34,24 @@ export default function ForgotPassword() {
       setError(null);
       setSuccess(null);
 
+      if (confirmPassword !== password) {
+        setError("Senhas não combinam");
+        return;
+      }
+
       try {
-        const response = await api.post("/forgot-password", {
-          email,
-        });
-        setSuccess(response.data.message);
-        console.log("Email enviado com sucesso:", response.data);
+        // const response = await api.post("/forgot-password", {
+        //   email,
+        // });
+        // setSuccess(response.data.message);
+        // console.log("Email enviado com sucesso:", response.data);
+
+        console.log("working...");
       } catch (err: any) {
-        setError(err.response?.data?.message || "Erro ao recuperar a senha");
+        setError(err.response?.data?.message || "Erro ao salvar nova senha");
       }
     },
-    [email]
+    [confirmPassword, password, router]
   );
 
   return (
@@ -49,22 +65,29 @@ export default function ForgotPassword() {
     >
       <Card className="w-[350px]  bg-white bg-opacity-80">
         <CardHeader>
-          <CardTitle>Esqueci minha senha</CardTitle>
-          <CardDescription>
-            Por favor, insira seu email já cadastrado!
-          </CardDescription>
+          <CardTitle>Nova senha</CardTitle>
+          <CardDescription>Por favor, insira uma nova senha!</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister}>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="email">Email</Label>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
                 <Input
-                  id="email"
-                  placeholder="test@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Digite sua senha"
+                  minLength={8}
+                  maxLength={12}
                 />
+                <div
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </div>
               </div>
             </div>
             {error && <p className="text-red-500">{error}</p>}

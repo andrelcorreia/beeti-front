@@ -26,7 +26,7 @@ export default function Products() {
         }
 
         const data = await productsRequest.listAllProducts(token, page, limit);
-        console.log({ data });
+
         setProducts(data);
         setTotalProducts(data.length);
       } catch (err: any) {
