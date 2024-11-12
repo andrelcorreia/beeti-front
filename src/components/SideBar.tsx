@@ -11,8 +11,22 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { useRouter } from "next/navigation";
+import { UserNav } from "./UserNav";
+
+const handleDelToken = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+};
 
 const Sidebar = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    handleDelToken();
+    router.push("/");
+  };
+
   return (
     <Command className="rounded-lg border shadow-md md:min-w-[450px]">
       <CommandInput placeholder="Type a command or search..." />
@@ -50,10 +64,14 @@ const Sidebar = () => {
             </Link>
           </CommandItem>
           <CommandItem>
-            <LogOut className="mr-2 h-4 w-4" />
-            <Link href="/">
-              <span>Deslogar</span>
+            <User className="mr-2 h-4 w-4" />
+            <Link href="/reports">
+              <span>Relatórios</span>
             </Link>
+          </CommandItem>
+          <CommandItem onSelect={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Deslogar</span>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />

@@ -3,6 +3,7 @@ import React from "react";
 import Sidebar from "@/components/SideBar";
 import { Clients } from "@/services/clientsRequest";
 import { useRouter } from "next/navigation";
+import { UserNav } from "@/components/UserNav";
 
 export default function Dashboard() {
   const [clients, setClients] = React.useState<any[]>([]);
@@ -42,6 +43,9 @@ export default function Dashboard() {
 
   return (
     <div className="flex">
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>

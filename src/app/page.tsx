@@ -35,9 +35,10 @@ export default function Home() {
       try {
         const data = await login(email, password);
         console.log("Login bem-sucedido:", data);
-
+        console.log({ user: data.data.user, data: data.data });
         if (data.data.token) {
           localStorage.setItem("token", data.data.token);
+          localStorage.setItem("user", JSON.stringify(data.data.user));
         }
 
         router.push("/dashboard");

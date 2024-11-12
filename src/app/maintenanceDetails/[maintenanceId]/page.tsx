@@ -153,10 +153,12 @@ export default function MaintenanceDetails({ params }: any) {
                         setTechnicalDate(e.target.checked ? true : undefined)
                       }
                     />
-                    <span>{technicalDate ? "Concluído" : "Não Concluído"}</span>
+                    <span>
+                      {technicalDate ? "Confirmado" : "Não confirmado"}
+                    </span>
                   </div>
                 ) : (
-                  <p>{technicalDate ? "Concluído" : "Não definida"}</p>
+                  <p>{technicalDate ? "Confirmado" : "Não confirmado"}</p>
                 )}
               </div>
 

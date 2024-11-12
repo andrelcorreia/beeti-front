@@ -37,8 +37,6 @@ export default function ServiceProvided() {
           search
         );
 
-        console.log({ response });
-
         // Atualizar para usar a estrutura correta da resposta da API
         if (response.result === "success" && Array.isArray(response.data)) {
           setService(response.data);
