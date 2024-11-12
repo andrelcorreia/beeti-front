@@ -40,13 +40,13 @@ const Sidebar = () => {
           <CommandItem>
             <User className="mr-2 h-4 w-4" />
             <Link href="/serviceProvided">
-              <span>Serviços providenciados - Em construção</span>
+              <span>Serviços providenciados</span>
             </Link>
           </CommandItem>
           <CommandItem>
             <User className="mr-2 h-4 w-4" />
-            <Link href="/users">
-              <span>Manutenção - Em construção</span>
+            <Link href="/maintenance">
+              <span>Manutenção</span>
             </Link>
           </CommandItem>
           <CommandItem>
