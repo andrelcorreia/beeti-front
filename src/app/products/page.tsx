@@ -61,6 +61,40 @@ export default function Products() {
     router.push("/createProduct");
   };
 
+  // Função para exportar o relatório
+  const handleExportReport = async () => {
+    try {
+      if (!token) {
+        throw new Error("Token não encontrado.");
+      }
+
+      const response = await fetch(
+        "http://localhost:3333/v1/reports/products",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao baixar o relatório.");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "relatorio_produtos.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -70,6 +104,16 @@ export default function Products() {
 
       {/* Main content */}
       <div className="flex-1 p-10">
+        {/* Botão para exportar o relatório */}
+        <div className="mb-5">
+          <button
+            className="bg-green-500 text-white p-3 rounded-md hover:bg-green-600"
+            onClick={handleExportReport}
+          >
+            Exportar Relatório
+          </button>
+        </div>
+
         <h1 className="text-xl font-bold mb-5">Produtos</h1>
         {loading ? (
           <p>Loading...</p>

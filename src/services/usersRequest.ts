@@ -1,3 +1,5 @@
+import api from "./axios";
+
 export class UsersRequest {
   async listAll(token: string, page: number = 0, limit: number = 15) {
     try {
@@ -9,8 +11,7 @@ export class UsersRequest {
           },
         }
       );
-      console.log({ response });
-      console.log("test");
+
       if (!response.ok) {
         throw new Error(`Erro na requisição: ${response.status}`);
       }
@@ -34,6 +35,40 @@ export class UsersRequest {
       }
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
+      throw error;
+    }
+  }
+
+  async createUser(
+    token: string,
+    userData: {
+      name: string;
+      email: string;
+      password: string;
+      access_level_id: string;
+    }
+  ) {
+    try {
+      console.log({ userData });
+      const response = await api.post(
+        "/users",
+        {
+          name: userData.name,
+          email: userData.email,
+          password: userData.password,
+          access_level_id: userData.access_level_id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao criar o usuário:", error);
       throw error;
     }
   }

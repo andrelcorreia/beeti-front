@@ -78,7 +78,7 @@ export default function Home() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5 relative">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Senha</Label>
                 <div className="relative">
                   <Input
                     id="password"

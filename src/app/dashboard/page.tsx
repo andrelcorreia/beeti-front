@@ -64,13 +64,13 @@ export default function Dashboard() {
                 onClick={() => handleClientClick(client.id)}
               >
                 <p>
-                  <strong>Name:</strong> {client.name}
+                  <strong>Nome:</strong> {client.name}
                 </p>
                 <p>
-                  <strong>Full Address:</strong> {client.full_address}
+                  <strong>Endereço completo:</strong> {client.full_address}
                 </p>
                 <p>
-                  <strong>Telephone:</strong> {client.telephone}
+                  <strong>Telefone:</strong> {client.telephone}
                 </p>
               </li>
             ))}

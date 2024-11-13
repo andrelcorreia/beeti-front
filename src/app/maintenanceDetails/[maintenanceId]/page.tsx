@@ -23,7 +23,6 @@ export default function MaintenanceDetails({ params }: any) {
 
   const token = localStorage.getItem("token") || "";
 
-  // Fetch Service Details
   useEffect(() => {
     const fetchService = async () => {
       try {
@@ -34,12 +33,12 @@ export default function MaintenanceDetails({ params }: any) {
         if (!data || data.result !== "success") {
           throw new Error("Serviço não encontrado.");
         }
-        console.log({ data });
+
         console.log({ servi: data.data });
         setMaintenance(data.data);
         setDescription(data.data.description);
         setEstimatedDate(data.data.estimated_date);
-        // Verifica se technical_date é booleano ou deixa como undefined
+
         setTechnicalDate(
           typeof data.data.technical_date === "boolean"
             ? data.data.technical_date
@@ -138,7 +137,11 @@ export default function MaintenanceDetails({ params }: any) {
                     className="border p-2 rounded w-full"
                   />
                 ) : (
-                  <p>{maintenance.estimated_date || "Não definida"}</p>
+                  <p>
+                    {new Date(
+                      maintenance.estimated_date
+                    ).toLocaleDateString() || "Não definida"}
+                  </p>
                 )}
               </div>
 

@@ -57,6 +57,10 @@ export default function Users() {
     setPage(1);
   };
 
+  const handleCreateUser = () => {
+    router.push("/createUser");
+  };
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -121,6 +125,12 @@ export default function Users() {
             <option value={15}>15</option>
           </select>
         </div>
+        <button
+          className="bg-blue-500 text-white p-2 rounded"
+          onClick={handleCreateUser}
+        >
+          Criar Novo Usuário
+        </button>
       </div>
     </div>
   );

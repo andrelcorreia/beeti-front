@@ -44,12 +44,14 @@ export class MaintenanceRequest {
     description: string
   ) {
     try {
+      console.log({ description, token });
       // Montar a URL dinamicamente
       const url =
         description && description !== ""
           ? `/maintenance?limit=${limit}&page=${page}&description=${description}`
           : `/maintenance?limit=${limit}&page=${page}`;
 
+      console.log({ url });
       const response = await api.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,

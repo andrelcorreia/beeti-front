@@ -86,7 +86,7 @@ export default function ClientDetails({ params }: any) {
             <div className="space-y-4">
               {/* Campos de nome, endereço e telefone */}
               <div>
-                <label className="block font-medium">Name:</label>
+                <label className="block font-medium">Nome:</label>
                 {isEditing ? (
                   <input
                     type="text"
@@ -100,7 +100,7 @@ export default function ClientDetails({ params }: any) {
               </div>
 
               <div>
-                <label className="block font-medium">Full Address:</label>
+                <label className="block font-medium">Endereço completo:</label>
                 {isEditing ? (
                   <input
                     type="text"
@@ -114,7 +114,7 @@ export default function ClientDetails({ params }: any) {
               </div>
 
               <div>
-                <label className="block font-medium">Telephone:</label>
+                <label className="block font-medium">Telefone:</label>
                 {isEditing ? (
                   <input
                     type="text"

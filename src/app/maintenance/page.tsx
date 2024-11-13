@@ -1,11 +1,10 @@
 "use client";
-import React, { useEffect, useState, useMemo } from "react";
-import Sidebar from "@/components/SideBar";
 import Pagination from "@/components/Pagination";
-import { useRouter } from "next/navigation";
-import { ServiceProvidedRequest } from "@/services/serviceProvidedRequest";
-import { Search } from "lucide-react"; // Ícone de busca do Lucide React
+import Sidebar from "@/components/SideBar";
 import { MaintenanceRequest } from "@/services/maintenanceRequest";
+import { Search } from "lucide-react"; // Ícone de busca do Lucide React
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Maintenance() {
   const [service, setService] = useState<any[]>([]);
@@ -17,6 +16,7 @@ export default function Maintenance() {
   const [search, setSearch] = useState("");
   const maintenanceRequest = useMemo(() => new MaintenanceRequest(), []);
   const router = useRouter();
+
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
