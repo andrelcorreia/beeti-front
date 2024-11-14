@@ -160,4 +160,23 @@ export class MaintenanceRequest {
       throw error;
     }
   }
+
+  async close(token: string, id: string) {
+    try {
+      const response = await api.delete(`/maintenance/close/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response) {
+        throw new Error(`Erro na requisição: ${response}`);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao fechar o serviço providenciado:", error);
+      throw error;
+    }
+  }
 }

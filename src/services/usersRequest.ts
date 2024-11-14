@@ -76,7 +76,7 @@ export class UsersRequest {
   async editUser(
     token: string,
     userId: string,
-    userData: { name: string; email: string }
+    userData: { name: string; email: string; access_level_id: string }
   ) {
     console.log({ token, userId, userData });
     try {
@@ -87,6 +87,29 @@ export class UsersRequest {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao atualizar o usuário");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Erro ao atualizar o usuário:", error);
+      throw error;
+    }
+  }
+
+  async inactive(token: string, userId: string) {
+    try {
+      const response = await fetch(`http://localhost:3333/v1/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import { UsersRequest } from "@/services/usersRequest";
 import { AccessLevelRequest } from "@/services/accessLevelRequest";
+import { UserNav } from "@/components/UserNav";
 
 export default function CreateUser() {
   const [name, setName] = useState("");
@@ -30,7 +31,6 @@ export default function CreateUser() {
         if (token) {
           const response = await accessLevelRequest.listAll(token);
 
-          console.log({ data: response.data.data });
           setAccessLevels(response?.data.data ?? []);
         }
       } catch (err) {
@@ -69,7 +69,6 @@ export default function CreateUser() {
         throw new Error("Token não encontrado.");
       }
 
-      console.log({ selectedAccessLevel });
       // Chamada para criar o usuário
       await usersService.createUser(token, {
         name,
@@ -88,6 +87,9 @@ export default function CreateUser() {
 
   return (
     <div className="flex">
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>
@@ -103,6 +105,7 @@ export default function CreateUser() {
               onChange={(e) => setName(e.target.value)}
               className="border p-2 rounded w-full"
               required
+              maxLength={80}
             />
           </div>
           <div>
@@ -113,6 +116,7 @@ export default function CreateUser() {
               onChange={(e) => setEmail(e.target.value)}
               className="border p-2 rounded w-full"
               required
+              maxLength={30}
             />
           </div>
           <div>
@@ -123,6 +127,7 @@ export default function CreateUser() {
               onChange={(e) => setPassword(e.target.value)}
               className="border p-2 rounded w-full"
               required
+              maxLength={12}
             />
           </div>
           <div>
@@ -133,10 +138,11 @@ export default function CreateUser() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="border p-2 rounded w-full"
               required
+              maxLength={12}
             />
           </div>
           <div>
-            <label className="block font-medium">Nível de Acesso:</label>
+            <label className="block font-medium">Nível de Acesso *:</label>
             <select
               value={selectedAccessLevel}
               onChange={(e) => setSelectedAccessLevel(e.target.value)}

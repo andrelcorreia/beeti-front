@@ -1,8 +1,13 @@
 export class Clients {
-  async listAllClients(token: string, page: number = 0, limit: number = 15) {
+  async listAllClients(
+    token: string,
+    page: number = 0,
+    limit: number = 15,
+    description?: string
+  ) {
     try {
       const response = await fetch(
-        `http://localhost:3333/v1/clients?limit=${limit}&page=${page}`,
+        `http://localhost:3333/v1/clients?limit=${limit}&page=${page}$description=${description}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -64,7 +69,7 @@ export class Clients {
   async inactiveClient(token: string, id: string) {
     try {
       const response = await fetch(`http://localhost:3333/v1/clients/${id}`, {
-        method: "POST",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

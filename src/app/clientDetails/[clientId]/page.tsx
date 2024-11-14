@@ -3,13 +3,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import { Clients } from "@/services/clientsRequest";
+import { UserNav } from "@/components/UserNav";
 
 export default function ClientDetails({ params }: any) {
   const router = useRouter();
   const { clientId } = params;
   const clientsService = useMemo(() => new Clients(), []);
-
-  console.log({ clientId });
 
   const [client, setClient] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -50,7 +49,6 @@ export default function ClientDetails({ params }: any) {
   };
 
   const handleSave = async () => {
-    console.log("info received", { clientId });
     try {
       await clientsService.editClient(token, clientId, {
         name,
@@ -63,6 +61,15 @@ export default function ClientDetails({ params }: any) {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await clientsService.inactiveClient(token, clientId);
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   const handleBack = () => {
     router.push("/dashboard");
   };
@@ -70,6 +77,9 @@ export default function ClientDetails({ params }: any) {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>
@@ -143,6 +153,12 @@ export default function ClientDetails({ params }: any) {
                   Salvar
                 </button>
               )}
+              <button
+                className="mt-4 bg-gray-500 text-white p-2 rounded"
+                onClick={handleDelete}
+              >
+                Deletar
+              </button>
 
               {/* Botão de voltar */}
               <button

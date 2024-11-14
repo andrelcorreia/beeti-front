@@ -1,10 +1,4 @@
 "use client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
 import { User } from "lucide-react"; // Certifique-se de ter instalado este pacote
 import Link from "next/link";
 

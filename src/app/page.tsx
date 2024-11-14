@@ -35,7 +35,6 @@ export default function Home() {
       try {
         const data = await login(email, password);
         console.log("Login bem-sucedido:", data);
-        console.log({ user: data.data.user, data: data.data });
         if (data.data.token) {
           localStorage.setItem("token", data.data.token);
           localStorage.setItem("user", JSON.stringify(data.data.user));
@@ -100,9 +99,9 @@ export default function Home() {
           </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Link href="/register">
+          {/* <Link href="/register">
             <Button variant="outline">Cadastre-se</Button>
-          </Link>
+          </Link> */}
           <Button type="submit" onClick={handleLogin}>
             Logar
           </Button>

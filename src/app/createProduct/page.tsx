@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import { ProductsRequest } from "@/services/productRequest";
+import { UserNav } from "@/components/UserNav";
 
 export default function CreateProduct() {
   const [name, setName] = useState("");
@@ -42,6 +43,9 @@ export default function CreateProduct() {
 
   return (
     <div className="flex">
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>
@@ -50,20 +54,22 @@ export default function CreateProduct() {
         {error && <p className="text-red-500">Error: {error}</p>}
         <div className="space-y-4">
           <div>
-            <label className="block font-medium">Nome:</label>
+            <label className="block font-medium">Nome: *</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="border p-2 rounded w-full"
+              maxLength={40}
             />
           </div>
           <div>
-            <label className="block font-medium">Descrição:</label>
+            <label className="block font-medium">Descrição: *</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="border p-2 rounded w-full"
+              maxLength={50}
             />
           </div>
           <button

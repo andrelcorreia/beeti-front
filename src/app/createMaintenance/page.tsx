@@ -1,5 +1,6 @@
 "use client";
 import Sidebar from "@/components/SideBar";
+import { UserNav } from "@/components/UserNav";
 import { Clients } from "@/services/clientsRequest";
 import { MaintenanceRequest } from "@/services/maintenanceRequest";
 import { ProductsRequest } from "@/services/productRequest";
@@ -70,6 +71,9 @@ export default function CreateMaintenance() {
 
   return (
     <div className="flex">
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>
@@ -78,16 +82,17 @@ export default function CreateMaintenance() {
         {error && <p className="text-red-500">Error: {error}</p>}
         <div className="space-y-4">
           <div>
-            <label className="block font-medium">Descrição:</label>
+            <label className="block font-medium">Descrição: *</label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="border p-2 rounded w-full"
+              maxLength={150}
             />
           </div>
           <div>
-            <label className="block font-medium">Data Estimada:</label>
+            <label className="block font-medium">Data Estimada: *</label>
             <input
               type="date"
               value={estimatedDate}
@@ -96,7 +101,7 @@ export default function CreateMaintenance() {
             />
           </div>
           <div>
-            <label className="block font-medium">Visita Técnica:</label>
+            <label className="block font-medium">Visita Técnica: *</label>
             <input
               type="checkbox"
               checked={technicalDate}
@@ -105,7 +110,7 @@ export default function CreateMaintenance() {
             />
           </div>
           <div>
-            <label className="block font-medium">Cliente:</label>
+            <label className="block font-medium">Cliente: *</label>
             <select
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}

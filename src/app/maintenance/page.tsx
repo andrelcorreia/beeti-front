@@ -1,6 +1,7 @@
 "use client";
 import Pagination from "@/components/Pagination";
 import Sidebar from "@/components/SideBar";
+import { UserNav } from "@/components/UserNav";
 import { MaintenanceRequest } from "@/services/maintenanceRequest";
 import { Search } from "lucide-react"; // Ícone de busca do Lucide React
 import { useRouter } from "next/navigation";
@@ -77,15 +78,59 @@ export default function Maintenance() {
     router.push("/createMaintenance");
   };
 
+  const handleExportReport = async () => {
+    try {
+      if (!token) {
+        throw new Error("Token não encontrado.");
+      }
+
+      const response = await fetch(
+        "http://localhost:3333/v1/reports/maintenance",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao baixar o relatório.");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "relatorio_maintenance.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>
 
       {/* Main content */}
       <div className="flex-1 p-10">
+        <div className="mb-5">
+          <button
+            className="bg-green-500 text-white p-3 rounded-md hover:bg-green-600"
+            onClick={handleExportReport}
+          >
+            Exportar Relatório
+          </button>
+        </div>
         <h1 className="text-xl font-bold mb-5">Manutenções</h1>
 
         {/* Barra de Pesquisa */}

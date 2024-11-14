@@ -1,5 +1,6 @@
 "use client";
 import Sidebar from "@/components/SideBar";
+import { UserNav } from "@/components/UserNav";
 import { Clients } from "@/services/clientsRequest";
 import { MaintenanceRequest } from "@/services/maintenanceRequest";
 import { useRouter } from "next/navigation";
@@ -85,6 +86,17 @@ export default function MaintenanceDetails({ params }: any) {
     }
   };
 
+  const handleClose = async () => {
+    if (confirm("Você tem certeza que deseja fechar o serviço?")) {
+      try {
+        await maintenanceRequest.close(token, maintenanceId);
+        router.push("/serviceProvided");
+      } catch (err: any) {
+        setError(err.message);
+      }
+    }
+  };
+
   const handleBack = () => {
     router.push("/serviceProvided");
   };
@@ -92,6 +104,9 @@ export default function MaintenanceDetails({ params }: any) {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>

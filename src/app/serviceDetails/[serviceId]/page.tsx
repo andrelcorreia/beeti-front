@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import { Clients } from "@/services/clientsRequest";
 import { ServiceProvidedRequest } from "@/services/serviceProvidedRequest";
+import { UserNav } from "@/components/UserNav";
 
 export default function ServiceProvidedDetails({ params }: any) {
   const router = useRouter();
@@ -96,6 +97,9 @@ export default function ServiceProvidedDetails({ params }: any) {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>

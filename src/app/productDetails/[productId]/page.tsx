@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/SideBar";
 import { ProductsRequest } from "@/services/productRequest";
+import { UserNav } from "@/components/UserNav";
 
 export default function ProductDetails({ params }: any) {
   const router = useRouter();
@@ -68,6 +69,9 @@ export default function ProductDetails({ params }: any) {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>
@@ -90,6 +94,7 @@ export default function ProductDetails({ params }: any) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="border p-2 rounded w-full"
+                    maxLength={80}
                   />
                 ) : (
                   <p>{name}</p>
@@ -104,6 +109,7 @@ export default function ProductDetails({ params }: any) {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="border p-2 rounded w-full"
+                    maxLength={70}
                   />
                 ) : (
                   <p>{description}</p>

@@ -4,6 +4,7 @@ import Sidebar from "@/components/SideBar";
 import Pagination from "@/components/Pagination";
 import { useRouter } from "next/navigation";
 import { ProductsRequest } from "@/services/productRequest";
+import { UserNav } from "@/components/UserNav";
 
 export default function Products() {
   const [products, setProducts] = useState<any[]>([]);
@@ -98,6 +99,9 @@ export default function Products() {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>

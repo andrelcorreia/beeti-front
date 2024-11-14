@@ -4,6 +4,7 @@ import Sidebar from "@/components/SideBar";
 import Pagination from "@/components/Pagination";
 import { useRouter } from "next/navigation";
 import { UsersRequest } from "@/services/usersRequest";
+import { UserNav } from "@/components/UserNav";
 
 export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
@@ -64,6 +65,9 @@ export default function Users() {
   return (
     <div className="flex">
       {/* Sidebar */}
+      <div className="absolute top-4 right-4">
+        <UserNav />
+      </div>
       <div className="h-[100vh]">
         <Sidebar />
       </div>
