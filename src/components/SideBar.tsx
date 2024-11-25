@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { House, LogOut, PackageSearch, User } from "lucide-react";
+import { House, LogOut, PackageSearch, User, Airplay } from "lucide-react";
 
 import {
   Command,
@@ -67,6 +67,12 @@ const Sidebar = () => {
               <User className="mr-2 h-4 w-4" />
               <Link href="/maintenance">
                 <span>Manutenção</span>
+              </Link>
+            </CommandItem>
+            <CommandItem>
+              <Airplay className="mr-2 h-4 w-4" />
+              <Link href="/access">
+                <span>Níveis de acesso</span>
               </Link>
             </CommandItem>
             <CommandItem>
