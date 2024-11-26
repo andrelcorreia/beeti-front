@@ -97,9 +97,11 @@ export class AccessLevelRequest {
   }
 
   async updatePermissions(token: string, accessLevelId: string, id: string[]) {
+    console.log({ id, accessLevelId });
     try {
-      const response = await api.get(
-        `/access-level/permissionsByAccess/${accessLevelId}`,
+      const response = await api.put(
+        `/access-level/updatePermissions/${accessLevelId}`,
+        id,
         {
           headers: {
             Authorization: `Bearer ${token}`,

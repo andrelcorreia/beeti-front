@@ -18,7 +18,7 @@ const EditPermissions: React.FC<EditPermissionsProps> = ({
   const [availablePermissions, setAvailablePermissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const accessLevelRequest = new AccessLevelRequest();
+  const accessLevelRequest = React.useMemo(() => new AccessLevelRequest(), []);
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -27,6 +27,8 @@ const EditPermissions: React.FC<EditPermissionsProps> = ({
           accessLevelRequest.listPermissions(token, accessLevelId),
           accessLevelRequest.listAvailablePermissions(token, accessLevelId),
         ]);
+
+        console.log({ active, available });
 
         setActivePermissions(active);
         setAvailablePermissions(available);
@@ -58,7 +60,8 @@ const EditPermissions: React.FC<EditPermissionsProps> = ({
     try {
       await accessLevelRequest.updatePermissions(token, accessLevelId, {
         activePermissions: activePermissions.map((p) => p.id),
-      });
+      }); //Aqui deve enviar os ids em uma array
+
       onSave();
     } catch (err) {
       console.error("Erro ao salvar permissões:", err);

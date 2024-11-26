@@ -5,15 +5,14 @@ import Sidebar from "@/components/SideBar";
 import { AccessLevelRequest } from "@/services/accessLevelRequest";
 import { UserNav } from "@/components/UserNav";
 import Pagination from "@/components/Pagination";
-import EditPermissions from "@/components/EditPermissions";
 
 export default function AccessDetails({ params }: any) {
   const router = useRouter();
   const { accessLevelId } = params;
 
   const [accessLevel, setAccessLevel] = useState<any>(null);
-  const [permissions, setPermissions] = useState<any[]>([]);
-  const [isEditing, setIsEditing] = useState(false);
+  const [appliedPermissions, setAppliedPermissions] = useState<any[]>([]);
+  const [availablePermissions, setAvailablePermissions] = useState<any[]>([]);
   const [isEditingPermissions, setIsEditingPermissions] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -23,18 +22,20 @@ export default function AccessDetails({ params }: any) {
   const [limit, setLimit] = useState(10);
   const [totalPermissions, setTotalPermissions] = useState(0);
 
+  const [availablePage, setAvailablePage] = useState(1);
+  const [availableTotal, setAvailableTotal] = useState(0);
+
   const accessLevelRequest = useMemo(() => new AccessLevelRequest(), []);
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  // Busca detalhes do nível de acesso
+  // Fetch detalhes do nível de acesso
   useEffect(() => {
     const fetchAccessLevelDetails = async () => {
       try {
         if (!token) throw new Error("Token não encontrado.");
         const data = await accessLevelRequest.listById(token, accessLevelId);
 
-        console.log("nivel", { data });
         setAccessLevel(data.data.data);
         setName(data.data.data.description);
       } catch (err: any) {
@@ -47,9 +48,9 @@ export default function AccessDetails({ params }: any) {
     fetchAccessLevelDetails();
   }, [accessLevelId, token, accessLevelRequest]);
 
-  // Busca permissões relacionadas ao nível de acesso
+  // Fetch permissões aplicadas
   useEffect(() => {
-    const fetchPermissions = async () => {
+    const fetchAppliedPermissions = async () => {
       try {
         if (!token) throw new Error("Token não encontrado.");
         const data = await accessLevelRequest.listPermissions(
@@ -59,32 +60,75 @@ export default function AccessDetails({ params }: any) {
           limit
         );
 
-        console.log({ data });
-        setPermissions(data.data.data);
-        setTotalPermissions(6);
+        setAppliedPermissions(data.data.data);
+        setTotalPermissions(data.data.total);
       } catch (err) {
-        console.error("Erro ao buscar permissões:", err);
+        console.error("Erro ao buscar permissões aplicadas:", err);
       }
     };
 
-    fetchPermissions();
+    fetchAppliedPermissions();
   }, [accessLevelId, page, limit, token, accessLevelRequest]);
 
-  const handleSave = async () => {
+  // Fetch permissões disponíveis
+  useEffect(() => {
+    const fetchAvailablePermissions = async () => {
+      try {
+        if (!token) throw new Error("Token não encontrado.");
+        const data = await accessLevelRequest.listAvailablePermissions(
+          token,
+          accessLevelId,
+          availablePage,
+          limit
+        );
+
+        setAvailablePermissions(data.data.data);
+        setAvailableTotal(data.data.total);
+      } catch (err) {
+        console.error("Erro ao buscar permissões disponíveis:", err);
+      }
+    };
+
+    fetchAvailablePermissions();
+  }, [accessLevelId, availablePage, limit, token, accessLevelRequest]);
+
+  const movePermission = (id: string, fromApplied: boolean) => {
+    if (fromApplied) {
+      const permission = appliedPermissions.find((perm) => perm.id === id);
+      setAppliedPermissions((prev) => prev.filter((perm) => perm.id !== id));
+      setAvailablePermissions((prev) => [...prev, permission]);
+    } else {
+      const permission = availablePermissions.find((perm) => perm.id === id);
+      setAvailablePermissions((prev) => prev.filter((perm) => perm.id !== id));
+      setAppliedPermissions((prev) => [...prev, permission]);
+    }
+  };
+
+  const handleSavePermissions = async () => {
     try {
       if (!token) throw new Error("Token não encontrado.");
-      await accessLevelRequest.edit(token, accessLevelId, {
-        description: name,
-      });
-      setIsEditing(false);
-    } catch (err: any) {
-      setError(err.message);
+      const appliedIds = appliedPermissions.map((perm) => perm.id);
+      await accessLevelRequest.updatePermissions(
+        token,
+        accessLevelId,
+        appliedIds
+      );
+      alert("Permissões atualizadas com sucesso!");
+      setIsEditingPermissions(false);
+    } catch (err) {
+      console.error("Erro ao salvar permissões:", err);
     }
   };
 
   const handleBack = () => {
     router.push("/access");
   };
+
+  const toggleEditing = () => {
+    setIsEditingPermissions((prev) => !prev);
+  };
+
+  const totalPages = (total: number) => Math.ceil(total / limit);
 
   return (
     <div className="flex">
@@ -110,66 +154,90 @@ export default function AccessDetails({ params }: any) {
             <div className="space-y-4">
               <div>
                 <label className="block font-medium">Nome:</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="border p-2 rounded w-full"
-                    maxLength={140}
-                  />
-                ) : (
-                  <p>{accessLevel?.description}</p>
-                )}
+                <p>{accessLevel?.description}</p>
               </div>
 
-              {/* Lista de permissões */}
+              <button
+                onClick={toggleEditing}
+                className="bg-blue-500 text-white p-2 rounded"
+              >
+                {isEditingPermissions ? "Cancelar" : "Editar"}
+              </button>
+
+              {/* Permissões aplicadas */}
               <div>
-                <h2 className="font-medium mb-3">Permissões:</h2>
-                {permissions.length > 0 ? (
-                  <ul className="space-y-2">
-                    {permissions.map((permission) => (
-                      <li key={permission.id} className="border p-2 rounded">
-                        {permission.description}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>Sem permissões encontradas.</p>
-                )}
+                <h2 className="font-medium mb-3">Permissões Aplicadas:</h2>
+                <ul className="space-y-2">
+                  {appliedPermissions.map((permission) => (
+                    <li
+                      key={permission.id}
+                      className="border p-2 rounded flex justify-between"
+                    >
+                      {permission.description}
+                      {isEditingPermissions && (
+                        <button
+                          className="text-red-500"
+                          onClick={() => movePermission(permission.id, true)}
+                        >
+                          Remover
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              {/* Paginação */}
+              {/* Paginação aplicada */}
               <Pagination
                 totalItems={totalPermissions}
                 currentPage={page}
                 itemsPerPage={limit}
                 onPageChange={setPage}
-                isLastPage={permissions.length < limit}
+                isLastPage={page >= totalPages(totalPermissions)}
+              />
+
+              {/* Permissões disponíveis */}
+              <div>
+                <h2 className="font-medium mb-3">Permissões Disponíveis:</h2>
+                <ul className="space-y-2">
+                  {availablePermissions.map((permission) => (
+                    <li
+                      key={permission.id}
+                      className="border p-2 rounded flex justify-between"
+                    >
+                      {permission.description}
+                      {isEditingPermissions && (
+                        <button
+                          className="text-blue-500"
+                          onClick={() => movePermission(permission.id, false)}
+                        >
+                          Adicionar
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Paginação disponível */}
+              <Pagination
+                totalItems={availableTotal}
+                currentPage={availablePage}
+                itemsPerPage={limit}
+                onPageChange={setAvailablePage}
+                isLastPage={availablePage >= totalPages(availableTotal)}
               />
 
               {/* Botões */}
               <div className="flex space-x-4 mt-5">
-                <button
-                  onClick={() => setIsEditingPermissions(true)}
-                  className="bg-blue-500 text-white p-2 rounded"
-                >
-                  Editar Permissões
-                </button>
-
                 {isEditingPermissions && (
-                  <EditPermissions
-                    accessLevelId={accessLevelId}
-                    token={token!}
-                    onClose={() => setIsEditingPermissions(false)}
-                    onSave={() => {
-                      setIsEditingPermissions(false);
-                      // Atualiza permissões na tela principal
-                      setPage(1); // Reseta a paginação para refazer a busca
-                    }}
-                  />
+                  <button
+                    onClick={handleSavePermissions}
+                    className="bg-green-500 text-white p-2 rounded"
+                  >
+                    Salvar
+                  </button>
                 )}
-
                 <button
                   className="bg-gray-500 text-white p-2 rounded"
                   onClick={handleBack}
