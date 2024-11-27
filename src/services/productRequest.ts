@@ -62,10 +62,10 @@ export class ProductsRequest {
     }
   }
 
-  async inactiveProduct(token: string, id: string) {
+  async deleteProduct(token: string, id: string) {
     try {
       const response = await fetch(`http://localhost:3333/v1/products/${id}`, {
-        method: "POST",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

@@ -188,13 +188,13 @@ export default function AccessDetails({ params }: any) {
               </div>
 
               {/* Paginação aplicada */}
-              <Pagination
+              {/* <Pagination
                 totalItems={totalPermissions}
                 currentPage={page}
                 itemsPerPage={limit}
                 onPageChange={setPage}
                 isLastPage={page >= totalPages(totalPermissions)}
-              />
+              /> */}
 
               {/* Permissões disponíveis */}
               <div>
@@ -220,13 +220,13 @@ export default function AccessDetails({ params }: any) {
               </div>
 
               {/* Paginação disponível */}
-              <Pagination
+              {/* <Pagination
                 totalItems={availableTotal}
                 currentPage={availablePage}
                 itemsPerPage={limit}
                 onPageChange={setAvailablePage}
                 isLastPage={availablePage >= totalPages(availableTotal)}
-              />
+              /> */}
 
               {/* Botões */}
               <div className="flex space-x-4 mt-5">

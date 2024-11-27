@@ -125,12 +125,12 @@ export default function Access() {
             <option value={15}>15</option>
           </select>
         </div>
-        <button
+        {/* <button
           className="bg-blue-500 text-white p-2 rounded"
           onClick={handleCreateUser}
         >
           Criar Novo Nível de accesso
-        </button>
+        </button> */}
       </div>
     </div>
   );

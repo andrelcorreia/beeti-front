@@ -28,7 +28,7 @@ export default function ProductDetails({ params }: any) {
         const data = await productRequest.listAllProducts(token);
         const selectedProduct = data.find((c: any) => c.id === productId);
 
-        if (!selectedProduct) throw new Error("Cliente não encontrado.");
+        if (!selectedProduct) throw new Error("Produto não encontrado.");
 
         setClient(selectedProduct);
         setName(selectedProduct.name);
@@ -48,14 +48,12 @@ export default function ProductDetails({ params }: any) {
   };
 
   const handleSave = async () => {
-    console.log("info received", { productId });
     try {
       await productRequest.editProduct(token!, productId, {
         name,
         description,
       });
       setIsEditing(false);
-
       router.push("/products");
     } catch (err: any) {
       setError(err.message);
@@ -66,9 +64,19 @@ export default function ProductDetails({ params }: any) {
     router.push("/products");
   };
 
+  const handleDelete = async () => {
+    if (confirm("Você tem certeza que deseja deletar este produto?")) {
+      try {
+        await productRequest.deleteProduct(token!, productId);
+        router.push("/products");
+      } catch (err: any) {
+        setError(err.message);
+      }
+    }
+  };
+
   return (
     <div className="flex">
-      {/* Sidebar */}
       <div className="absolute top-4 right-4">
         <UserNav />
       </div>
@@ -76,7 +84,6 @@ export default function ProductDetails({ params }: any) {
         <Sidebar />
       </div>
 
-      {/* Main content */}
       <div className="flex-1 p-10">
         {loading ? (
           <p>Loading...</p>
@@ -116,7 +123,6 @@ export default function ProductDetails({ params }: any) {
                 )}
               </div>
 
-              {/* Botão de editar */}
               {!isEditing ? (
                 <button
                   className="mt-4 bg-blue-500 text-white p-2 rounded"
@@ -133,12 +139,18 @@ export default function ProductDetails({ params }: any) {
                 </button>
               )}
 
-              {/* Botão de voltar */}
               <button
                 className="mt-4 bg-gray-500 text-white p-2 rounded"
                 onClick={handleBack}
               >
                 Voltar
+              </button>
+
+              <button
+                className="mt-4 bg-red-500 text-white p-2 rounded"
+                onClick={handleDelete}
+              >
+                Deletar
               </button>
             </div>
           </div>
