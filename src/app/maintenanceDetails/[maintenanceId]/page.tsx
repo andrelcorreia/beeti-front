@@ -185,6 +185,11 @@ export default function MaintenanceDetails({ params }: any) {
                 <p>{maintenance.user.name}</p>
               </div>
 
+              <div>
+                <label className="block font-medium">Produto:</label>
+                <p>{maintenance.product.name}</p>
+              </div>
+
               {/* Botão de editar */}
               {!isEditing ? (
                 <button
